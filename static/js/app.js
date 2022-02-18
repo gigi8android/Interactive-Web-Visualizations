@@ -2,6 +2,9 @@
 // Manipulate the index.html page by update/append div classes and div id
 //////////////////////////////////////////////////////////////////////////////
 function formatIndexPage() {
+    // Change font color of the page heading
+    d3.select("h1").style("color","#00008B");
+
     // Adjust the column width of the row displaying barChart and gauge graph
     d3.select(".col-md-5").classed("col-md-5",false).classed("col-md-6",true);
     d3.select(".col-md-5").classed("col-md-5",false).classed("col-md-4",true);
