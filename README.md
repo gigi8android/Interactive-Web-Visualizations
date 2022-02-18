@@ -10,4 +10,5 @@ The folder structure is as followed: </br>
 **_Notes:_** </br>
   - All the format for the page _index.html_ are done using javascript and d3
   - Additional plotly pie chart has been created and added to the page
+  - Reference of "bonus.js" in the file index.html has been removed as all the codes are combined in one file _app.js_
   - Link of the github pupblished page: https://gigi8android.github.io/Interactive-Web-Visualizations/
