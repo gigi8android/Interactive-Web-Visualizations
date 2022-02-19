@@ -211,7 +211,7 @@ function createGraphs(selected_id) {
                 font: {"color" : "red"},
                 height: 300,
                 width: 400,
-                margin: {"t": 70, "b": 0, "l": 25, "r": 0},
+                margin: {"t": 100, "b": 0, "l": 25, "r": 0},
                 showlegend: false
             }
 
