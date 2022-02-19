@@ -296,7 +296,7 @@ function loadDefaultGraphs() {
 
 
 //////////////////////////////////////////////////////////////////////////////
-// Manipulate the index.html page by update/append div classes and div id
+// Manipulate the index.html page by update/append div class and div id
 //////////////////////////////////////////////////////////////////////////////
 function formatIndexPage() {
     // Change font color of the page heading
@@ -306,7 +306,7 @@ function formatIndexPage() {
     d3.select(".col-md-5").classed("col-md-5",false).classed("col-md-6",true);
     d3.select(".col-md-5").classed("col-md-5",false).classed("col-md-4",true);
 
-    // Adjust the column width of the row displaying bubbleChart and add new div to display gaugeGraphCompare
+    // Adjust the column width of the row displaying bubbleChart and add new div to display pie chart
     d3.select(".col-md-12").classed("col-md-12", false).classed("temp",true);
     d3.selectAll(".col-md-12").each(function () {
         var t = document.createElement('div');
