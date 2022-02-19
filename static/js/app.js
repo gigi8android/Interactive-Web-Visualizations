@@ -135,7 +135,7 @@ function createGraphs(selected_id) {
             // Set weight to the angle to adjust the needle movement position, 9 sectors, 20 degrees for each angle
             let weight = 20;
          
-            // Set up angles of the needle for each sector on the gauge, maximum 100 degrees
+            // Set up angle of the needle for each sector on the gauge, maximum 180 degrees
             let angles = 180 - wfreq*weight; 
 
             // Make minor adjustments to the needle so it can land to the right position on the gauge sector
