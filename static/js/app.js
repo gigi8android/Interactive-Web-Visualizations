@@ -1,6 +1,6 @@
 
 //////////////////////////////////////////////////////////////////////////////
-// Read data from json file based on a selected id, then call all the graphs creating functions
+// Read data from json file, filter the information based on user selected sample id, then call all graphs creating functions
 //////////////////////////////////////////////////////////////////////////////
 function createGraphs(selected_id) {
     // Use d3.json to read samples.json data file 
@@ -51,7 +51,6 @@ function createGraphs(selected_id) {
                 showlegend: false,
                 xaxis: {
                     zeroline: true,
-                    // title: "Test Sample Values",
                 },
                 yaxis: {
                     zeroline: true,
@@ -68,11 +67,7 @@ function createGraphs(selected_id) {
         // Create a bubble graph for the selected id sample
         //////////////////////////////////////////////////////////////////////////////
         function bubbleGraph(selected_id) {
-
-
-            // const otu_labels = selectedSample.otu_labels;
-            // const wfreq = parseFloat(selectedMetaData.wfreq)
-
+            // Plot graph for all data of the selected sample
             var trace1 = {
                 type:"scatter",
                 x: otu_ids,
@@ -105,7 +100,7 @@ function createGraphs(selected_id) {
         // Create gauge graph for the selected id sample
         //////////////////////////////////////////////////////////////////////////////
         function gaugeGraph(selected_id) {
-            // Use plotly pie chart and converted to gauge chart
+            // Create gauge chart by using plotly pie chart
             let traceData = {
               type: 'pie',
               showlegend: false,
@@ -124,7 +119,7 @@ function createGraphs(selected_id) {
               hoverinfo: "skip"
             }
           
-            // Create the center dot where the needle "originates"
+            // Create the center dot where the needle originates
             let centerDot = {
               type: 'scatter',
               x: [0],
@@ -151,7 +146,7 @@ function createGraphs(selected_id) {
             // Manage the needle's angle where wfreq is a null value
             if (!wfreq) {angles = -180};
 
-            // Create the needle for the gauge
+            // Set up the needle for the gauge
             let radius = .5;
             let radians = angles * Math.PI / 180;
             let aX = 0.025 * Math.cos((radians) * Math.PI / 180);
@@ -167,6 +162,7 @@ function createGraphs(selected_id) {
                       ' L ' + cX + ' ' + cY +
                       ' Z';
           
+            // Set up the gauge layout
             let layout = {
               title: "<b>Belly Button Washing Frequency</b><br>Scrubs per Week",
               font: { color: "red", family: "Arial", size: 12 },
@@ -203,6 +199,7 @@ function createGraphs(selected_id) {
         // Create pie chart
         //////////////////////////////////////////////////////////////////////////////
         function pieChart(selected_id) {
+            // Create pie chart for top 10 OTU
             var data = {
                 values: top10Values,
                 labels: top10Ids,
