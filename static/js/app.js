@@ -1,26 +1,3 @@
-//////////////////////////////////////////////////////////////////////////////
-// Manipulate the index.html page by update/append div classes and div id
-//////////////////////////////////////////////////////////////////////////////
-function formatIndexPage() {
-    // Change font color of the page heading
-    d3.select("h1").style("color","#00008B");
-
-    // Adjust the column width of the row displaying barChart and gauge graph
-    d3.select(".col-md-5").classed("col-md-5",false).classed("col-md-6",true);
-    d3.select(".col-md-5").classed("col-md-5",false).classed("col-md-4",true);
-
-    // Adjust the column width of the row displaying bubbleChart and add new div to display gaugeGraphCompare
-    d3.select(".col-md-12").classed("col-md-12", false).classed("temp",true);
-    d3.selectAll(".col-md-12").each(function () {
-        var t = document.createElement('div');
-        t.classList.add("myDiv")
-        this.parentNode.insertBefore(t, this.nextSibling);       
-    });
-    d3.select(".myDiv").append("div").attr("id", "pieChart");
-    d3.select(".myDiv").classed("myDiv", false).classed("col-md-3",true);
-    d3.select(".col-md-12").classed("col-md-12", false).classed("col-md-8",true);
-    d3.select(".temp").classed("temp", false).classed("col-md-12",true);
-}
 
 //////////////////////////////////////////////////////////////////////////////
 // Read data from json file based on a selected id, then call all the graphs creating functions
@@ -59,10 +36,10 @@ function createGraphs(selected_id) {
         //////////////////////////////////////////////////////////////////////////////
         function barGraph(selected_id) {
             // Plot graph for the top 10 OTU of the selected sample
-            var yticks = top10Ids.map(otu_ID => `OTU ${otu_ID}`)
+            var yaxisLabels = top10Ids.map(otu_ID => `OTU ${otu_ID}`)
             var data = [
                 {   
-                    y: yticks,
+                    y: yaxisLabels,
                     x: top10Values,
                     text: top10Labels, 
                     type: 'bar',
@@ -91,16 +68,21 @@ function createGraphs(selected_id) {
         // Create a bubble graph for the selected id sample
         //////////////////////////////////////////////////////////////////////////////
         function bubbleGraph(selected_id) {
+
+
+            // const otu_labels = selectedSample.otu_labels;
+            // const wfreq = parseFloat(selectedMetaData.wfreq)
+
             var trace1 = {
                 type:"scatter",
-                x: top10Ids,
-                y: top10Values,
-                text: top10Labels,
+                x: otu_ids,
+                y: sample_values,
+                text: otu_labels,
                 mode: 'markers',
                 marker: {
-                    color: top10Ids,
+                    color: otu_ids,
                     opacity: [0.1 ,0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1],
-                    size: top10Values
+                    size: sample_values
                 }
             }
             var data = [trace1]
@@ -155,27 +137,21 @@ function createGraphs(selected_id) {
               hoverinfo: "skip"
             }
           
-            // Create the needle for the gauge (triangular version)
-            // Add weights to the angles to correct the needle movement position
-            let weight = 0;
-            let wfreqRoundup = Math.round(wfreq)
+            // Set weight to the angle to adjust the needle movement position, 9 sectors, 20 degrees for each angle
+            let weight = 20;
+         
+            // Set up angles of the needle for each sector on the gauge, maximum 100 degrees
+            let angles = 180 - wfreq*weight; 
 
-            console.log("JS Math round up: ", wfreqRoundup)
+            // Make minor adjustments to the needle so it can land to the right position on the gauge sector
+            if ((wfreq == 1) || (wfreq == 2) || (wfreq ==3)) { angles = angles + 3; } 
+            else if (wfreq ==5) { angles = angles - 2; } 
+            else if ((wfreq == 6) || (wfreq ==7) || (wfreq ==8)) { angles = angles - 4; };
 
-            if (wfreqRoundup == 1) { weight = 5; }
-            else if (wfreqRoundup == 2) { weight = 18; } 
-            else if (wfreqRoundup ==3) { weight = 19; } 
-            else if (wfreqRoundup ==4) { weight = 20; } 
-            else if ((wfreqRoundup ==5) || (wfreqRoundup ==6) || (wfreqRoundup ==7)){ weight = 21; }
-            else if (wfreqRoundup ==8) { weight = 20.5; } 
-            else if (wfreqRoundup ==9) { weight = -20;  };
-          
-            // Set up angles of the needle for each sector on the gauge
-            let angles = 180 - wfreqRoundup*weight; 
-            
-            // Manage the needle's angle where wfreq is 0 or null values
-            if (angles == 180 || !angles) {angles = -180};
+            // Manage the needle's angle where wfreq is a null value
+            if (!wfreq) {angles = -180};
 
+            // Create the needle for the gauge
             let radius = .5;
             let radians = angles * Math.PI / 180;
             let aX = 0.025 * Math.cos((radians) * Math.PI / 180);
@@ -228,13 +204,13 @@ function createGraphs(selected_id) {
         //////////////////////////////////////////////////////////////////////////////
         function pieChart(selected_id) {
             var data = {
-                values: top10Ids,
-                labels: top10Values,
+                values: top10Values,
+                labels: top10Ids,
                 type: 'pie'
             }
 
             var layout = {
-                title: "<b>% Split of OTUs by Number of Samples</b><br>(Label: Count no. of samples, OTU id and %)",
+                title: "<b>Percentage Split of Top 10 OTUs </b><br>(Label: OTU id, Count no. of Samples and %)",
                 font: {"color" : "red"},
                 height: 300,
                 width: 400,
@@ -323,7 +299,32 @@ function loadDefaultGraphs() {
 
 
 //////////////////////////////////////////////////////////////////////////////
-// Initialise and load the web visualisation page
+// Manipulate the index.html page by update/append div classes and div id
+//////////////////////////////////////////////////////////////////////////////
+function formatIndexPage() {
+    // Change font color of the page heading
+    d3.select("h1").style("color","#00008B");
+
+    // Adjust the column width of the row displaying barChart and gauge graph
+    d3.select(".col-md-5").classed("col-md-5",false).classed("col-md-6",true);
+    d3.select(".col-md-5").classed("col-md-5",false).classed("col-md-4",true);
+
+    // Adjust the column width of the row displaying bubbleChart and add new div to display gaugeGraphCompare
+    d3.select(".col-md-12").classed("col-md-12", false).classed("temp",true);
+    d3.selectAll(".col-md-12").each(function () {
+        var t = document.createElement('div');
+        t.classList.add("myDiv")
+        this.parentNode.insertBefore(t, this.nextSibling);       
+    });
+    d3.select(".myDiv").append("div").attr("id", "pieChart");
+    d3.select(".myDiv").classed("myDiv", false).classed("col-md-3",true);
+    d3.select(".col-md-12").classed("col-md-12", false).classed("col-md-8",true);
+    d3.select(".temp").classed("temp", false).classed("col-md-12",true);
+}
+
+
+//////////////////////////////////////////////////////////////////////////////
+// Initialise and load the page of web visualisation dashboard
 //////////////////////////////////////////////////////////////////////////////
 formatIndexPage();
 loadDefaultGraphs();
